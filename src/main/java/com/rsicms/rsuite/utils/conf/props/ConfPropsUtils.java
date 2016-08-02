@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,14 +38,9 @@ public class ConfPropsUtils {
    * @param rawPropertyName
    * @return Normalized property name.
    */
-  public static String normalizePropertyName(
-      String rawPropertyName) {
+  public static String normalizePropertyName(String rawPropertyName) {
     if (StringUtils.isNotBlank(rawPropertyName)) {
-      return rawPropertyName.toLowerCase().replaceAll(
-          " ",
-          ".").replaceAll(
-          "[^a-z0-9.]",
-          "");
+      return rawPropertyName.toLowerCase().replaceAll(" ", ".").replaceAll("[^a-z0-9.]", "");
     }
     return rawPropertyName;
   }
@@ -58,14 +53,9 @@ public class ConfPropsUtils {
    * @return value of property
    * @throws RSuiteException
    */
-  public static String getProperty(
-      ConfigurationProperties props,
-      String name)
+  public static String getProperty(ConfigurationProperties props, String name)
       throws RSuiteException {
-    return getProperty(
-        props,
-        name,
-        DEFAULT_PROP_IS_REQUIRED);
+    return getProperty(props, name, DEFAULT_PROP_IS_REQUIRED);
   }
 
   /**
@@ -77,15 +67,9 @@ public class ConfPropsUtils {
    * @return A property value or the default.
    * @throws RSuiteException Shouldn't be thrown by this method.
    */
-  public static String getProperty(
-      ConfigurationProperties props,
-      String name,
-      String defaultValue)
+  public static String getProperty(ConfigurationProperties props, String name, String defaultValue)
       throws RSuiteException {
-    String value = getProperty(
-        props,
-        name,
-        false);
+    String value = getProperty(props, name, false);
     if (value == null)
       return defaultValue;
     return value;
@@ -100,20 +84,13 @@ public class ConfPropsUtils {
    * @return value of property
    * @throws RSuiteException Thrown if the property value is required by not defined.
    */
-  public static String getProperty(
-      ConfigurationProperties props,
-      String name,
-      boolean required)
+  public static String getProperty(ConfigurationProperties props, String name, boolean required)
       throws RSuiteException {
-    String value = StringUtils.trim(props.getProperty(
-        name,
-        null));
+    String value = StringUtils.trim(props.getProperty(name, null));
 
     if (value == null && required) {
       throw new RSuiteException(RSuiteException.ERROR_CONFIGURATION_PROBLEM,
-          ConfUtilsMessageProperties.get(
-              "conf.error.required.prop.not.set",
-              name));
+          ConfUtilsMessageProperties.get("conf.error.required.prop.not.set", name));
     }
 
     return value;
@@ -126,14 +103,9 @@ public class ConfPropsUtils {
    * @return Property value as a URI
    * @throws RSuiteException
    */
-  public static URI getPropertyAsURI(
-      ConfigurationProperties props,
-      String name)
+  public static URI getPropertyAsURI(ConfigurationProperties props, String name)
       throws RSuiteException {
-    return getPropertyAsURI(
-        props,
-        name,
-        DEFAULT_PROP_IS_REQUIRED);
+    return getPropertyAsURI(props, name, DEFAULT_PROP_IS_REQUIRED);
   }
 
   /**
@@ -145,23 +117,14 @@ public class ConfPropsUtils {
    * @return Property value as a URI
    * @throws RSuiteException
    */
-  public static URI getPropertyAsURI(
-      ConfigurationProperties props,
-      String name,
-      boolean required)
+  public static URI getPropertyAsURI(ConfigurationProperties props, String name, boolean required)
       throws RSuiteException {
-    String val = getProperty(
-        props,
-        name,
-        required);
+    String val = getProperty(props, name, required);
     try {
       return new URI(val);
     } catch (Exception ex) {
       throw new RSuiteException(RSuiteException.ERROR_CONFIGURATION_PROBLEM,
-          ConfUtilsMessageProperties.get(
-              "conf.error.invalid.property.value",
-              val,
-              name), ex);
+          ConfUtilsMessageProperties.get("conf.error.invalid.property.value", val, name), ex);
     }
   }
 
@@ -174,35 +137,22 @@ public class ConfPropsUtils {
    * @return property value
    * @throws RSuiteException
    */
-  public static int getPropertyAsInt(
-      ConfigurationProperties props,
-      String name,
-      int defaultValue) {
+  public static int getPropertyAsInt(ConfigurationProperties props, String name, int defaultValue) {
     try {
-      String propValue = getProperty(
-          props,
-          name,
-          false);
+      String propValue = getProperty(props, name, false);
       if (StringUtils.isNotBlank(propValue)) {
         try {
           return Integer.parseInt(propValue);
         } catch (NumberFormatException e) {
-          log.warn(
-              ConfUtilsMessageProperties.get(
-                  "conf.warn.invalid.value.using.default",
-                  name,
-                  propValue,
-                  defaultValue),
-              e);
+          log.warn(ConfUtilsMessageProperties.get("conf.warn.invalid.value.using.default", name,
+              propValue, defaultValue), e);
         }
       }
     } catch (RSuiteException e) {
       // Ignore; we have a default value.
     }
 
-    log.info(ConfUtilsMessageProperties.get(
-        "conf.info.property.not.set.using.default",
-        name,
+    log.info(ConfUtilsMessageProperties.get("conf.info.property.not.set.using.default", name,
         defaultValue));
     return defaultValue;
   }
@@ -215,15 +165,10 @@ public class ConfPropsUtils {
    * @param defaultValue
    * @return A property value as a boolean, or the provided default.
    */
-  public static boolean getPropertyAsBoolean(
-      ConfigurationProperties props,
-      String name,
+  public static boolean getPropertyAsBoolean(ConfigurationProperties props, String name,
       boolean defaultValue) {
     try {
-      String value = getProperty(
-          props,
-          name,
-          false);
+      String value = getProperty(props, name, false);
       if (value == null)
         return defaultValue;
       return new Boolean(value).booleanValue();
@@ -244,18 +189,10 @@ public class ConfPropsUtils {
    *         property is not set and property is not required), but it will never be null.
    * @throws RSuiteException Throw if the property is not set and the property is required.
    */
-  public static List<String> getPropertyAsStringList(
-      ConfigurationProperties props,
-      String name,
-      String delimiter,
-      boolean required,
-      boolean trim)
-      throws RSuiteException {
+  public static List<String> getPropertyAsStringList(ConfigurationProperties props, String name,
+      String delimiter, boolean required, boolean trim) throws RSuiteException {
     List<String> list = new ArrayList<String>();
-    String delimitedValue = getProperty(
-        props,
-        name,
-        required);
+    String delimitedValue = getProperty(props, name, required);
     if (StringUtils.isNotEmpty(delimitedValue)) {
       String[] arr = delimitedValue.split(delimiter);
       if (arr != null) {
@@ -284,20 +221,13 @@ public class ConfPropsUtils {
    *         Parameters control if prefix is removed from the property name, and if values are now
    *         the map's keys.
    */
-  public static Map<String, String> getPropertiesWithPrefix(
-      ConfigurationProperties props,
-      String prefix,
-      boolean removePrefix,
-      boolean valueBecomesKey) {
+  public static Map<String, String> getPropertiesWithPrefix(ConfigurationProperties props,
+      String prefix, boolean removePrefix, boolean valueBecomesKey) {
     Map<String, String> propsOut = new HashMap<String, String>();
-    for (Map.Entry<String, String> entry : props.getPropertiesWithPrefix(
-        prefix).entrySet()) {
-      String propName = removePrefix ? entry.getKey().substring(
-          prefix.length()) : entry.getKey();
+    for (Map.Entry<String, String> entry : props.getPropertiesWithPrefix(prefix).entrySet()) {
+      String propName = removePrefix ? entry.getKey().substring(prefix.length()) : entry.getKey();
       String propValue = StringUtils.trim(entry.getValue());
-      propsOut.put(
-          valueBecomesKey ? propValue : propName,
-          valueBecomesKey ? propName : propValue);
+      propsOut.put(valueBecomesKey ? propValue : propName, valueBecomesKey ? propName : propValue);
     }
     return propsOut;
   }
@@ -314,19 +244,9 @@ public class ConfPropsUtils {
    * @return true if delimited property value contains the specified value.
    * @throws RSuiteException
    */
-  public static boolean doesDelimitedPropertyValueContain(
-      ConfigurationProperties props,
-      String propName,
-      String checkFor)
-      throws RSuiteException {
-    return doesDelimitedPropertyValueContain(
-        props,
-        propName,
-        null,
-        ",",
-        checkFor,
-        true,
-        false);
+  public static boolean doesDelimitedPropertyValueContain(ConfigurationProperties props,
+      String propName, String checkFor) throws RSuiteException {
+    return doesDelimitedPropertyValueContain(props, propName, null, ",", checkFor, true, false);
   }
 
   /**
@@ -345,20 +265,11 @@ public class ConfPropsUtils {
    * @return true if checkFor is in the property value; else, false.
    * @throws RSuiteException
    */
-  public static boolean doesDelimitedPropertyValueContain(
-      ConfigurationProperties props,
-      String propName,
-      String defaultPropValue,
-      String propValueDelimiter,
-      String checkFor,
-      boolean trimWhitespace,
-      boolean caseSensitive)
-      throws RSuiteException {
+  public static boolean doesDelimitedPropertyValueContain(ConfigurationProperties props,
+      String propName, String defaultPropValue, String propValueDelimiter, String checkFor,
+      boolean trimWhitespace, boolean caseSensitive) throws RSuiteException {
 
-    String propValue = getProperty(
-        props,
-        propName,
-        false);
+    String propValue = getProperty(props, propName, false);
     if (propValue == null && defaultPropValue != null) {
       propValue = defaultPropValue;
     }
